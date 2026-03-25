@@ -93,14 +93,11 @@ function swaggerParamToZod(param: SwaggerParameter): z.ZodTypeAny {
 // Zod şemasına dönüştürerek MCP tool input shape'i oluşturan fonksiyon.
 // Amaç: Swagger parametrelerinden otomatik Zod input objesi üretmek.
 function buildZodShape(
-  operation: SwaggerOperation
+  operation: SwaggerOperation,
+  method: string
 ): Record<string, z.ZodTypeAny> {
-  // Zod shape objesi oluşturuyoruz.
-  // Bu obje MCP tool'un input parametrelerini tanımlar.
-  // Record<string, z.ZodTypeAny> → key parametre adı, value Zod schema.
   const shape: Record<string, z.ZodTypeAny> = {
-    // Her endpoint için ortak olarak kullanılabilecek "token" parametresi ekleniyor.
-    // Bu parametre kullanıcı isterse manuel token gönderebilsin diye var.
+    // Her endpoint için ortak: kullanıcı isterse manuel token gönderebilir.
     token: z
       .string()
       .optional()
@@ -111,19 +108,27 @@ function buildZodShape(
 
   const params = operation.parameters ?? [];
   for (const param of params) {
-    // Sadece query ve path parametrelerini alıyoruz
-    // body parametrelerini şu an desteklemiyoruz (GET isteklerinde olmaz zaten)
+    // query ve path parametrelerini işle
     if (param.in !== "query" && param.in !== "path") continue;
 
-    // Parametre adını olduğu gibi kullanıyoruz
     const safeKey = param.name;
-
     try {
       shape[safeKey] = swaggerParamToZod(param);
     } catch {
-      // Dönüşümde hata olursa string olarak ekle
       shape[safeKey] = z.string().optional().describe(param.description ?? safeKey);
     }
+  }
+
+  // PUT metodunda body parametresi ekleniyor.
+  // Swagger'daki body schema genellikle $ref ile karmaşık bir model olduğundan
+  // Claude'un kolayca doldurabileceği JSON string olarak kabul ediyoruz.
+  if (method === "put") {
+    shape["body"] = z
+      .string()
+      .describe(
+        "Güncellenecek alanları içeren JSON string. " +
+        "Örnek: '{\"Adi\":\"Yeni Ad\", \"Telefon\":\"05001234567\"}'"
+      );
   }
 
   return shape;
@@ -231,7 +236,7 @@ export function registerSwaggerTools(
       `${config.path} endpoint'ini sorgular.`;
 
     // Swagger operation içindeki parametrelerden Zod input schema üretiyoruz
-    const zodShape = buildZodShape(operation);
+    const zodShape = buildZodShape(operation, config.method);
 
     // Closure içinde kullanmak için path'i ayrı değişkende tutuyoruz
     const endpointPath = config.path;
@@ -263,10 +268,22 @@ export function registerSwaggerTools(
 
           // Method'a göre doğru HTTP isteğini at
           let response;
-          if (config.method === "delete") {
+          if (config.method === "put") {
+            // Body JSON string'i parse edip gönder
+            const rawBody = (input as Record<string, unknown>)["body"];
+            if (!rawBody) {
+              throw new Error("PUT isteği için 'body' parametresi zorunludur.");
+            }
+            let parsedBody: unknown;
+            try {
+              parsedBody = typeof rawBody === "string" ? JSON.parse(rawBody) : rawBody;
+            } catch {
+              throw new Error(`'body' parametresi geçerli bir JSON değil: ${rawBody}`);
+            }
+            response = await client.put(resolvedPath, parsedBody);
+          } else if (config.method === "delete") {
             response = await client.delete(resolvedPath);
           } else {
-            // ERP endpoint'ine GET isteği at
             response = await client.get(resolvedPath, { params });
           }
 
@@ -277,8 +294,8 @@ export function registerSwaggerTools(
           const kayitSayisi = Array.isArray(data?.sonuc)
             ? data.sonuc.length
             : Array.isArray(data)
-            ? data.length
-            : "?";
+              ? data.length
+              : "?";
 
           return {
             content: [

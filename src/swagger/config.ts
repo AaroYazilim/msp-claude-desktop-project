@@ -6,44 +6,35 @@
  *
  * Her giriş:
  *   path    → Swagger'daki endpoint yolu (ör: "/CariHareketleri")
- *   method  → HTTP metodu (sadece "get" destekleniyor şu an)
+ *   method  → HTTP metodu: "get" | "post" | "put" | "delete"
  *   toolName → Claude'un göreceği tool adı (MCP standardında snake_case)
  *   description → Claude'a bu tool'un ne işe yaradığını anlatan kısa açıklama
  *                 (boş bırakılırsa Swagger'daki summary/description kullanılır)
  */
 
-// EndpointConfig adında bir TypeScript interface tanımlıyoruz.
-// Bu interface, MCP server'da kullanılacak bir API endpoint'inin
-// temel yapı bilgisini (config) tanımlamak için kullanılır.
 export interface EndpointConfig {
   // API endpoint'inin path bilgisini tutar.
-  // Örnek:
-  // "/api/Cari"
-  // "/api/CariHareketleri"
-  // "/api/CariHareketleri/Pivot"
+  // Örnek: "/api/Cari", "/api/CariHareketleri", "/api/Cari/{id}"
   path: string;
 
   // HTTP method bilgisini tutar.
-  method: "get" | "delete";
-  
+  method: "get" | "delete" | "put";
+
   // MCP server'da oluşturulacak tool'un adı.
   // Claude Desktop bu ismi görür ve bu isimle tool'u çağırır.
-  // Örnek:
-  // "cari_listele"
-  // "cari_hareketleri_listele"
   toolName: string;
-  
+
   // Tool açıklaması (description).
   // Eğer burada bir açıklama verilirse Swagger'daki açıklamayı override eder.
   // Eğer boş bırakılırsa Swagger dokümanındaki description otomatik kullanılır.
-  // Bu yüzden opsiyonel (?)
   description?: string;
 }
 
 export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
 
-  // ! CARİ
-  // ! ✅ /api/CariHareketleri
+  // ─── CARİ ────────────────────────────────────────────────────────────────────
+
+  // ✅ /api/CariHareketleri GET
   {
     path: "/api/CariHareketleri",
     method: "get",
@@ -51,7 +42,7 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "ERP sisteminden cari hesap hareketlerini getirir. Müşteri/tedarikçi ekstresi, borç/alacak durumları ve finansal raporlama için kullanılır.",
   },
-  // ! ✅ /api/CariHareketleri/Pivot
+  // ✅ /api/CariHareketleri/Pivot GET
   {
     path: "/api/CariHareketleri/Pivot",
     method: "get",
@@ -59,7 +50,7 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "Cari hareketleri pivot (özet/çapraz tablo) formatında getirir. Dönemsel karşılaştırma ve toplu analiz için idealdir.",
   },
-  // ! ✅  /api/Cari/Bakiye
+  // ✅ /api/Cari/Bakiye GET
   {
     path: "/api/Cari/Bakiye",
     method: "get",
@@ -67,7 +58,7 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "Cari hesapların güncel bakiyelerini getirir. Müşteri ve tedarikçi borç/alacak durumlarını görmek için kullanılır.",
   },
-  // ! ✅ /api/Cari/{id} GET
+  // ✅ /api/Cari/{id} GET
   {
     path: "/api/Cari/{id}",
     method: "get",
@@ -75,7 +66,17 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "ERP sisteminden ID'ye göre tek bir cari kartın detay bilgisini getirir.",
   },
-  // ! ✅ /api/Cari/{id} DELETE
+  // ✅ /api/Cari/{id} PUT
+  {
+    path: "/api/Cari/{id}",
+    method: "put",
+    toolName: "cari_guncelle",
+    description:
+      "ERP sisteminde belirtilen ID'ye sahip cari kartı günceller. " +
+      "Güncellenecek alanları 'body' parametresi olarak JSON string formatında gönderin. " +
+      "Örnek: '{\"Adi\":\"Yeni Ad\", \"Telefon\":\"05001234567\"}'",
+  },
+  // ✅ /api/Cari/{id} DELETE
   {
     path: "/api/Cari/{id}",
     method: "delete",
@@ -83,7 +84,7 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "ERP sisteminde belirtilen ID'ye sahip cari kartı siler veya pasifleştirir. Bağlı hareketi olan cariler tamamen silinemez, yalnızca pasifleştirilebilir.",
   },
-  // ! ✅ /api/Cari
+  // ✅ /api/Cari GET
   {
     path: "/api/Cari",
     method: "get",
@@ -91,9 +92,10 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "ERP sistemindeki cari hesap kartlarını listeler. Müşteri ve tedarikçi bilgilerini aramak ve sorgulamak için kullanılır.",
   },
-  
-  // ! STOK
-  // ! ✅  /api/StokHareketleri
+
+  // ─── STOK ────────────────────────────────────────────────────────────────────
+
+  // ✅ /api/StokHareketleri GET
   {
     path: "/api/StokHareketleri",
     method: "get",
@@ -101,7 +103,7 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "ERP sisteminden stok (ürün) hareketlerini listeler. Ürün giriş-çıkışları, depo transferleri ve envanter geçmişi takibi için kullanılır.",
   },
-  // ! ✅ /api/StokHareketleri/Pivot
+  // ✅ /api/StokHareketleri/Pivot GET
   {
     path: "/api/StokHareketleri/Pivot",
     method: "get",
@@ -109,13 +111,13 @@ export const WHITELISTED_ENDPOINTS: EndpointConfig[] = [
     description:
       "ERP sisteminden stok hareketlerini pivot (özet/çapraz tablo) formatında getirir.",
   },
-  // ! ✅ /api/Stok
+  // ✅ /api/Stok GET
   {
-  path: "/api/Stok",
-  method: "get",
-  toolName: "stok_listele",
-  description:
-    "ERP sistemindeki stok (ürün) kartlarını listeler. Ürün arama, filtreleme ve envanter inceleme için kullanılır.",
+    path: "/api/Stok",
+    method: "get",
+    toolName: "stok_listele",
+    description:
+      "ERP sistemindeki stok (ürün) kartlarını listeler. Ürün arama, filtreleme ve envanter inceleme için kullanılır.",
   },
 
 ];
