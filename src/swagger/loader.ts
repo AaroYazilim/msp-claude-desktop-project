@@ -1,4 +1,6 @@
 import axios from "axios";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * ─── Swagger Tip Tanımları ────────────────────────────────────────────────────
@@ -45,11 +47,36 @@ export interface SwaggerDoc {
  * Verilen URL'den Swagger JSON'u indirir ve parse eder.
  * Başarısız olursa hata fırlatır.
  */
-export async function loadSwaggerDoc(url: string): Promise<SwaggerDoc> {
-  process.stderr.write(`📥 Swagger dokümantasyonu yükleniyor: ${url}\n`);
+export async function loadSwaggerDoc(urlOrPath: string): Promise<SwaggerDoc> {
+  // Yerel dosya yolu mu yoksa HTTP URL mi?
+  const isLocalFile =
+    !urlOrPath.startsWith("http://") && !urlOrPath.startsWith("https://");
+
+  if (isLocalFile) {
+    // Yerel dosyadan oku
+    const absolutePath = path.resolve(urlOrPath);
+    process.stderr.write(`📂 Swagger yerel dosyadan yükleniyor: ${absolutePath}\n`);
+
+    const raw = fs.readFileSync(absolutePath, "utf-8");
+    const doc: SwaggerDoc = JSON.parse(raw);
+
+    if (!doc || !doc.paths) {
+      throw new Error(`Geçersiz Swagger belgesi: 'paths' alanı bulunamadı. (${absolutePath})`);
+    }
+
+    const endpointSayisi = Object.keys(doc.paths).length;
+    process.stderr.write(
+      `✅ Swagger yüklendi (yerel). Toplam endpoint sayısı: ${endpointSayisi}\n`
+    );
+
+    return doc;
+  }
+
+  // Uzak URL'den indir
+  process.stderr.write(`📥 Swagger uzak sunucudan yükleniyor: ${urlOrPath}\n`);
 
   try {
-    const response = await axios.get<SwaggerDoc>(url, {
+    const response = await axios.get<SwaggerDoc>(urlOrPath, {
       timeout: 15000,
       headers: { Accept: "application/json" },
     });
@@ -62,13 +89,13 @@ export async function loadSwaggerDoc(url: string): Promise<SwaggerDoc> {
 
     const endpointSayisi = Object.keys(doc.paths).length;
     process.stderr.write(
-      `✅ Swagger yüklendi. Toplam endpoint sayısı: ${endpointSayisi}\n`
+      `✅ Swagger yüklendi (uzak). Toplam endpoint sayısı: ${endpointSayisi}\n`
     );
 
     return doc;
   } catch (error: any) {
     const mesaj = error?.response?.data || error?.message || String(error);
-    throw new Error(`Swagger yüklenemedi (${url}): ${mesaj}`);
+    throw new Error(`Swagger yüklenemedi (${urlOrPath}): ${mesaj}`);
   }
 }
 

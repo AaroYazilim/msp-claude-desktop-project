@@ -8,6 +8,7 @@ import {
   findOperation,
 } from "./loader.js";
 import { EndpointConfig } from "./config.js";
+import { logRequest, logResponse, logError } from "../logger.js";
 
 // Swagger'dan gelen parametre bilgisini alıp
 // bunu Zod şemasına (validation schema) dönüştüren fonksiyon.
@@ -119,14 +120,14 @@ function buildZodShape(
     }
   }
 
-  // PUT metodunda body parametresi ekleniyor.
+  // PUT ve POST metodunda body parametresi ekleniyor.
   // Swagger'daki body schema genellikle $ref ile karmaşık bir model olduğundan
   // Claude'un kolayca doldurabileceği JSON string olarak kabul ediyoruz.
-  if (method === "put") {
+  if (method === "put" || method === "post") {
     shape["body"] = z
       .string()
       .describe(
-        "Güncellenecek alanları içeren JSON string. " +
+        "Gönderilecek alanları içeren JSON string. " +
         "Örnek: '{\"Adi\":\"Yeni Ad\", \"Telefon\":\"05001234567\"}'"
       );
   }
@@ -246,9 +247,12 @@ export function registerSwaggerTools(
       config.toolName,
       toolDescription,
       zodShape,
+
       async (input) => {
+        const startTime = Date.now();
         try {
           // Eğer kullanıcı input içinde token gönderirse onu al
+
           const token = typeof input.token === "string" ? input.token : undefined;
 
           // ERP API client'ını oluştur
@@ -266,13 +270,23 @@ export function registerSwaggerTools(
             endpointPath
           );
 
+          // İstek logunu yaz
+          const rawBody = (input as Record<string, unknown>)["body"];
+          logRequest(
+            config.toolName,
+            config.method.toUpperCase(),
+            resolvedPath,
+            Object.keys(params).length > 0 ? params : undefined,
+            (config.method === "put" || config.method === "post") ? rawBody : undefined
+          );
+
           // Method'a göre doğru HTTP isteğini at
           let response;
-          if (config.method === "put") {
+          if (config.method === "put" || config.method === "post") {
             // Body JSON string'i parse edip gönder
             const rawBody = (input as Record<string, unknown>)["body"];
             if (!rawBody) {
-              throw new Error("PUT isteği için 'body' parametresi zorunludur.");
+              throw new Error(`${config.method.toUpperCase()} isteği için 'body' parametresi zorunludur.`);
             }
             let parsedBody: unknown;
             try {
@@ -280,7 +294,11 @@ export function registerSwaggerTools(
             } catch {
               throw new Error(`'body' parametresi geçerli bir JSON değil: ${rawBody}`);
             }
-            response = await client.put(resolvedPath, parsedBody);
+            if (config.method === "post") {
+              response = await client.post(resolvedPath, parsedBody);
+            } else {
+              response = await client.put(resolvedPath, parsedBody);
+            }
           } else if (config.method === "delete") {
             response = await client.delete(resolvedPath);
           } else {
@@ -296,6 +314,9 @@ export function registerSwaggerTools(
             : Array.isArray(data)
               ? data.length
               : "?";
+
+          // Yanıt logunu yaz
+          logResponse(resolvedPath, response.status ?? 200, kayitSayisi, Date.now() - startTime);
 
           return {
             content: [
@@ -316,6 +337,14 @@ export function registerSwaggerTools(
             "Bilinmeyen hata";
 
           const statusKod = error?.response?.status ?? "N/A";
+
+          // Hata logunu yaz
+          logError(
+            endpointPath,
+            statusKod,
+            typeof mesaj === "string" ? mesaj : JSON.stringify(mesaj),
+            Date.now() - startTime
+          );
 
           return {
             isError: true,
