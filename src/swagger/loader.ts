@@ -1,3 +1,20 @@
+/**
+ * 📄 loader.ts — Swagger Belgesi Yükleyici
+ *
+ * Bu dosya, Swagger/OpenAPI JSON belgesini iki farklı kaynaktan yükler:
+ *
+ *   📁 Yerel Dosya: Path "http" / "https" ile başlamıyorsa disk'ten okur.
+ *      → Hızlıdır, ağ bağlantısı gerektirmez.
+ *      → Proje kökündeki src/swagger.json kullanılır.
+ *
+ *   🌐 Uzak URL: Path "http" / "https" ile başlıyorsa axios ile indirir.
+ *      → Canlı Swagger dokümantasyonu için kullanılır.
+ *      → Timeout: 15 saniye
+ *
+ * Ayrıca Swagger belgesi içinden belirli bir path+method kombinasyonunu
+ * bulmak için yardımcı fonksiyon (findOperation) da buradadır.
+ */
+
 import axios from "axios";
 import * as fs from "fs";
 import * as path from "path";

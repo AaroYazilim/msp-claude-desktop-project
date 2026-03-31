@@ -6,6 +6,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/StokHareketleri",
     method: "get",
     toolName: "stok_hareketleri_listele",
+    source: "stok.ts",
     description:
       "ERP sisteminden stok (ürün) hareketlerini listeler. Ürün giriş-çıkışları, depo transferleri ve envanter geçmişi takibi için kullanılır.",
   },
@@ -14,6 +15,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/StokHareketleri/Pivot",
     method: "get",
     toolName: "stok_hareketleri_pivot",
+    source: "stok.ts",
     description:
       "ERP sisteminden stok hareketlerini pivot (özet/çapraz tablo) formatında getirir.",
   },
@@ -22,6 +24,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok",
     method: "get",
     toolName: "stok_listele",
+    source: "stok.ts",
     description:
       "ERP sistemindeki stok (ürün) kartlarını listeler. Ürün arama, filtreleme ve envanter inceleme için kullanılır.",
   },
@@ -30,6 +33,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/MinListe",
     method: "get",
     toolName: "stok_min_liste",
+    source: "stok.ts",
     description:
       "Minimum stok seviyesinin altına düşmüş ürünleri listeler. Kritik stok takibi, yenileme planlaması ve uyarı raporları için kullanılır.",
   },
@@ -38,6 +42,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/StokMiktarListe",
     method: "get",
     toolName: "stok_miktar_liste",
+    source: "stok.ts",
     description:
       "Stokların depo bazlı miktar bilgilerini getirir. " +
       "Belirli stoklar veya filtreler ile sorgulanabilir. " +
@@ -49,6 +54,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}",
     method: "get",
     toolName: "stok_detay_getir",
+    source: "stok.ts",
     description:
       "Belirtilen stok ID'sine sahip stok kartının detay bilgilerini getirir. " +
       "⚠️ Buradaki 'id' bir STOK kartı ID'sidir; cari, sipariş veya başka bir kayıt ID'siyle karıştırılmamalıdır. " +
@@ -59,17 +65,19 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}",
     method: "put",
     toolName: "stok_guncelle",
+    source: "stok.ts",
     description:
       "ERP sisteminde belirtilen stok ID'sine sahip stok kartını günceller. " +
       "⚠️ Buradaki 'id' bir STOK kartı ID'sidir; cari veya başka bir kayıt ID'siyle karıştırılmamalıdır. " +
       "Güncellenecek alanları 'body' parametresi olarak JSON string formatında gönderin. " +
-      "Örnek: '{\"Adi\":\"Yeni Stok\", \"Barkod\":\"1234567890\"}'",
+      'Örnek: \'{"Adi":"Yeni Stok", "Barkod":"1234567890"}\'',
   },
   // ❌ /api/Stok/{id} DELETE
   {
     path: "/api/Stok/{id}",
     method: "delete",
     toolName: "stok_kayit_kaldir",
+    source: "stok.ts",
     description:
       "Belirtilen stok ID'sine sahip stok kaydı için ERP API'ye kaldırma isteği gönderir. " +
       "⚠️ Buradaki 'id' bir STOK kartı ID'sidir; cari veya başka bir kayıt ID'siyle karıştırılmamalıdır. " +
@@ -83,16 +91,18 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok",
     method: "post",
     toolName: "stok_olustur",
+    source: "stok.ts",
     description:
       "Yeni bir stok kartı oluşturur. " +
       "Stok bilgilerini 'body' parametresi olarak JSON string formatında gönderin. " +
-      "Örnek: '{\"Adi\":\"Yeni Ürün\", \"Barkod\":\"1234567890\"}'",
+      'Örnek: \'{"Adi":"Yeni Ürün", "Barkod":"1234567890"}\'',
   },
   // 🔍 /api/Stok/List GET
   {
     path: "/api/Stok/Liste",
     method: "get",
     toolName: "stok_liste_esnek",
+    source: "stok.ts",
     description:
       "Stok kayıtları üzerinde gelişmiş ve esnek sorgulama yapar. " +
       "Kolon seçimi (Sutunlar), filtre (Kisit) ve sıralama (SiralamaKisiti) parametreleri desteklenir. " +
@@ -104,6 +114,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/GrupluListe",
     method: "get",
     toolName: "stok_gruplu_liste",
+    source: "stok.ts",
     description:
       "Stok kayıtlarını belirli alanlara göre gruplandırarak listeler. " +
       "Kategori, tip veya diğer alanlara göre gruplanmış stok verileri getirir. " +
@@ -114,6 +125,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/OnayDurumu",
     method: "get",
     toolName: "stok_onay_durumu_getir",
+    source: "stok.ts",
     description:
       "Belirtilen ID'ye sahip stok kartının onay durumunu getirir. " +
       "Onay bilgileri ve mevcut durum ERP API'den alınarak kullanıcıya iletilir.",
@@ -123,6 +135,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/DegisiklikGecmisi",
     method: "get",
     toolName: "stok_degisim_gecmisi_getir",
+    source: "stok.ts",
     description:
       "Belirtilen ID'ye sahip stok kartının değişiklik geçmişini getirir. " +
       "Yapılan değişiklikler, eski ve yeni değerler ile birlikte listelenir. " +
@@ -133,6 +146,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/Belgeler",
     method: "get",
     toolName: "stok_belgeleri_getir",
+    source: "stok.ts",
     description:
       "Belirtilen ID'ye sahip stok kartına ait belgeleri ve dokümanları getirir. " +
       "Dosya bilgileri ve ilişkili belgeler ERP API'den alınarak kullanıcıya iletilir.",
@@ -143,6 +157,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/BelgeSil/{BelgeID}",
     method: "delete",
     toolName: "stok_belge_kaldir",
+    source: "stok.ts",
     description:
       "Belirtilen stok kaydına ait belgeyi kaldırmak için ERP API'ye istek gönderir. " +
       "Bu işlem geri alınamayabilir. " +
@@ -155,6 +170,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/Notlar",
     method: "get",
     toolName: "stok_notlarini_getir",
+    source: "stok.ts",
     description:
       "Belirtilen ID'ye sahip stok kartına ait notları getirir. " +
       "Kayda eklenmiş açıklama, yorum ve serbest metin notları ERP API'den alınarak kullanıcıya iletilir.",
@@ -164,6 +180,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/NotEkle",
     method: "post",
     toolName: "stok_not_ekle",
+    source: "stok.ts",
     description:
       "Belirtilen ID'ye sahip stok kartına yeni bir not ekler. " +
       "Not içeriği ERP API'ye gönderilir ve işlem sonucu kullanıcıya iletilir.",
@@ -173,6 +190,7 @@ export const STOK_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Stok/{id}/NotSil/{NotID}",
     method: "delete",
     toolName: "stok_not_kaldir",
+    source: "stok.ts",
     description:
       "Belirtilen stok kaydına ait notu kaldırmak için ERP API'ye istek gönderir. " +
       "Bu işlem geri alınamayabilir. " +

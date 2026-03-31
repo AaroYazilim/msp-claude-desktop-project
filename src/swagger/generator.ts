@@ -1,3 +1,29 @@
+/**
+ * 📄 generator.ts — Swagger'dan Otomatik MCP Tool Üretici
+ *
+ * Bu dosya, loadSwaggerDoc() ile yüklenen Swagger belgesini okur ve
+ * WHITELISTED_ENDPOINTS listesindeki her endpoint için otomatik olarak
+ * bir MCP tool oluşturarak server'a kaydeder.
+ *
+ * ─── Genel Akış ──────────────────────────────────────────────────────
+ *  1. Her EndpointConfig için Swagger'da ilgili path+method bulunur
+ *  2. O endpoint'in parametreleri (query, path, body) Zod şemasına çevrilir
+ *  3. server.tool() ile MCP tool olarak kaydedilir
+ *  4. Tool çağrıldığında:
+ *       a. Path parametreleri URL'e yerleştirilir (/api/Cari/{id} → /api/Cari/5)
+ *       b. Query parametreleri HTTP isteğine eklenir
+ *       c. Body (POST/PUT) JSON olarak gönderilir
+ *       d. Yanıt Claude Desktop'a metin olarak döndürülür
+ *
+ * ─── Yardımcı Fonksiyonlar ───────────────────────────────────────────
+ *  swaggerParamToZod()  → Swagger parametresini Zod şemasına çevirir
+ *  schemaToZod()        → Swagger body şemasını (nested object) Zod'a çevirir
+ *  buildZodShape()      → Tüm parametreleri birleştirip tool şemasını oluşturur
+ *  buildPathParams()    → {id} gibi path parametrelerini gerçek değerle doldurur
+ *  buildRequestParams() → Query string parametrelerini dict olarak hazırlar
+ *  registerSwaggerTools() → Ana fonksiyon, tüm tool'ları server'a kaydeder
+ */
+
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createErpClient } from "../erp/client.js";
@@ -422,7 +448,10 @@ export function registerSwaggerTools(
     });
 
     process.stderr.write(
-      `✅ Tool kaydedildi: ${config.toolName} ← ${config.method.toUpperCase()} ${endpointPath}\n`,
+      `✅ Tool kaydedildi: ${config.toolName} ← ${config.method.toUpperCase()} ${endpointPath}` +
+        `\n` +
+        (config.source ? ` (${config.source})` : "") +
+        `\n`,
     );
 
     basariSayisi++;

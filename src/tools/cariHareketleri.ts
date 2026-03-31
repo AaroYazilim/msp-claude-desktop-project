@@ -69,7 +69,7 @@ const CariHareketleriSchema = z.object({
   belgeNo: z.string().optional().describe("Belge no. (Örn: 'FTR-2025-001')"),
   tipKodu: z.string().optional().describe("Hareket türünü belirten kod."),
   tipAdi: z.string().optional().describe("Hareket türü adı (Örn: 'Satış Faturası')"),
-  
+
   tutar: z.number().optional().describe("Tam Tutar eşleşmesi (TL)"),
   bakiye: z.number().optional().describe("Tam Bakiye eşleşmesi (TL)"),
   dovizKodu: z.string().optional().describe("Döviz Kodu (Örn: USD, EUR)"),
@@ -99,7 +99,7 @@ const CariHareketleriSchema = z.object({
 export function registerCariHareketleriTools(server: McpServer) {
   server.tool(
     "cari_hareketleri_listele", // Tool'un adı. MCP standardında genelde küçük harf ve alt tire kullanılır.
-    
+
     // Açıklama: Claude'a bu tool'un NE İŞE YARADIĞINI anlatıyoruz.
     // Çok kritik! Claude, kullanıcının "Cari hesap hareketlerini getir" cümlesiyle bu tool'u eşleştirir.
     `ERP sisteminden cari hesap hareketlerini getirir.
@@ -110,7 +110,7 @@ Tüm filtreler opsiyoneldir; birden fazla filtre birlikte kullanılabilir.`,
     // Ancak Typescript type error almamak için şema tipini tekrar inline olarak ya da schema referansını yayarak verebiliriz.
     // Kolaylık olsun diye schema objesinin içindeki '.shape' özelliğini kullanıyoruz.
     CariHareketleriSchema.shape,
-    
+
     // Handler: Claude parametreleri toplayıp bize verdiğinde çalışacak asıl kod.
     async (input) => {
       try {

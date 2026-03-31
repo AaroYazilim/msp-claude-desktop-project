@@ -10,4 +10,7 @@ export interface EndpointConfig {
 
   // Tool açıklaması (description).
   description?: string;
+
+  // Dosya ismi
+  source?: string;
 }

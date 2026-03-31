@@ -6,6 +6,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/CariHareketleri",
     method: "get",
     toolName: "cari_hareketleri_listele",
+    source: "cari.ts",
     description:
       "ERP sisteminden cari hesap hareketlerini getirir. Müşteri/tedarikçi ekstresi, borç/alacak durumları ve finansal raporlama için kullanılır.",
   },
@@ -14,6 +15,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/MinListe",
     method: "get",
     toolName: "cari_min_liste",
+    source: "cari.ts",
     description:
       "Cari hesapların temel bilgilerini içeren hafif listeyi getirir. " +
       "Hızlı arama, seçim listeleri ve performans odaklı işlemler için kullanılır.",
@@ -23,6 +25,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/GrupluListe",
     method: "get",
     toolName: "cari_gruplu_liste",
+    source: "cari.ts",
     description:
       "Cari hesapları belirli alanlara göre gruplandırarak listeler. " +
       "Bölge, plasiyer, kategori gibi alanlara göre analiz yapılmasını sağlar. " +
@@ -34,6 +37,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/OnayDurumu",
     method: "get",
     toolName: "cari_onay_durumu_getir",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari kartın onay durumunu getirir. " +
       "Onay bilgileri ve mevcut durum ERP API'den alınarak kullanıcıya iletilir.",
@@ -44,6 +48,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/DegisiklikGecmisi",
     method: "get",
     toolName: "cari_degisim_gecmisi_getir",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari kartın değişiklik geçmişini getirir. " +
       "Yapılan değişiklikler, eski ve yeni değerler ile birlikte listelenir. " +
@@ -55,6 +60,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/Belgeler",
     method: "get",
     toolName: "cari_belgeleri_getir",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari kartına ait belgeleri ve dokümanları getirir. " +
       "Dosya bilgileri ve ilişkili belgeler ERP API'den alınarak kullanıcıya iletilir.",
@@ -64,6 +70,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/BelgeEkle",
     method: "post",
     toolName: "cari_belge_ekle",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari karta yeni bir belge ekler. " +
       "Belge bilgileri ve dosya içeriği ERP API'ye gönderilir. " +
@@ -74,6 +81,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/BelgeSil/{BelgeID}",
     method: "delete",
     toolName: "cari_belge_kaldir",
+    source: "cari.ts",
     description:
       "Belirtilen cari kaydına ait belgeyi kaldırmak için ERP API'ye istek gönderir. " +
       "Bu işlem geri alınamayabilir. " +
@@ -85,6 +93,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/Notlar",
     method: "get",
     toolName: "cari_notlarini_getir",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari kartına ait notları getirir. " +
       "Kayda eklenmiş açıklama, yorum ve serbest metin notları ERP API'den alınarak kullanıcıya iletilir.",
@@ -94,6 +103,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/NotEkle",
     method: "post",
     toolName: "cari_not_ekle",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari kartına yeni bir not ekler. " +
       "Not içeriği ERP API'ye gönderilir and işlem sonucu kullanıcıya iletilir.",
@@ -104,6 +114,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}/NotSil/{NotID}",
     method: "delete",
     toolName: "cari_not_kaldir",
+    source: "cari.ts",
     description:
       "Belirtilen cari kaydına ait notu kaldırmak için ERP API'ye istek gönderir. " +
       "Bu işlem geri alınamayabilir. " +
@@ -115,6 +126,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/CariHareketleri/Pivot",
     method: "get",
     toolName: "cari_hareketleri_pivot",
+    source: "cari.ts",
     description:
       "Cari hareketleri pivot (özet/çapraz tablo) formatında getirir. Dönemsel karşılaştırma ve toplu analiz için idealdir.",
   },
@@ -123,6 +135,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/Bakiye",
     method: "get",
     toolName: "cari_bakiye",
+    source: "cari.ts",
     description:
       "Cari hesapların güncel bakiyelerini getirir. Müşteri ve tedarikçi borç/alacak durumlarını görmek için kullanılır.",
   },
@@ -131,6 +144,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}",
     method: "get",
     toolName: "cari_getir",
+    source: "cari.ts",
     description:
       "ERP sisteminden ID'ye göre tek bir cari kartın detay bilgisini getirir.",
   },
@@ -139,6 +153,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}",
     method: "put",
     toolName: "cari_guncelle",
+    source: "cari.ts",
     description:
       "ERP sisteminde belirtilen ID'ye sahip cari kartı günceller. " +
       "Güncellenecek alanları 'body' parametresi olarak JSON string formatında gönderin. " +
@@ -149,6 +164,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari/{id}",
     method: "delete",
     toolName: "cari_kayit_kaldir",
+    source: "cari.ts",
     description:
       "Belirtilen ID'ye sahip cari kaydı için ERP API'sine istek gönderir. " +
       "İşlem sonucunda API'den dönen yanıt kullanıcıya iletilir.",
@@ -158,6 +174,7 @@ export const CARI_ENDPOINTS: EndpointConfig[] = [
     path: "/api/Cari",
     method: "get",
     toolName: "cari_listele",
+    source: "cari.ts",
     description:
       "ERP sistemindeki cari hesap kartlarını listeler. Müşteri ve tedarikçi bilgilerini aramak ve sorgulamak için kullanılır.",
   },
