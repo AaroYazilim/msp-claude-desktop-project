@@ -106,12 +106,14 @@ async function main() {
     // bu yüzden __dirname kullanıyoruz.
     // tsx src/index.ts  → __dirname = .../src/   → ../src/swagger.json = ✅
     // node dist/index.js → __dirname = .../dist/ → ../src/swagger.json = ✅
+    // 1. config.ts'den gelen SWAGGER_URL bilgisine gidiyor:
     const resolvedSwaggerPath =
       SWAGGER_URL.startsWith("http://") || SWAGGER_URL.startsWith("https://")
         ? SWAGGER_URL
         : join(__dirname, "../src/swagger.json");
 
     const swaggerDoc = await loadSwaggerDoc(resolvedSwaggerPath);
+    // 2. config.ts'den gelen WHITELISTED_ENDPOINTS listesine göre oluşturuyor:
     registerSwaggerTools(server, swaggerDoc, WHITELISTED_ENDPOINTS);
   } catch (err: any) {
     // Swagger yüklenemezse custom tool'lar hâlâ çalışır, sadece log yaz

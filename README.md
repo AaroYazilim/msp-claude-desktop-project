@@ -8,13 +8,13 @@ Claude, bu server aracılığıyla ERP API'sine doğal dil komutlarıyla erişeb
 
 ## 🧱 Teknoloji Yığını
 
-| Paket | Sürüm | Amaç |
-|---|---|---|
-| `@modelcontextprotocol/sdk` | ^1.27.1 | MCP server altyapısı (Claude Desktop ile iletişim) |
-| `axios` | ^1.13.6 | ERP API'sine HTTP istekleri |
-| `zod` | * | Tool parametre validasyonu ve şema üretimi |
-| `typescript` | ^5.9.3 | Tip güvenliği |
-| `tsx` | ^4.21.0 | Geliştirme modunda TypeScript'i derlemeden çalıştırma |
+| Paket                       | Sürüm   | Amaç                                                  |
+| --------------------------- | ------- | ----------------------------------------------------- |
+| `@modelcontextprotocol/sdk` | ^1.27.1 | MCP server altyapısı (Claude Desktop ile iletişim)    |
+| `axios`                     | ^1.13.6 | ERP API'sine HTTP istekleri                           |
+| `zod`                       | \*      | Tool parametre validasyonu ve şema üretimi            |
+| `typescript`                | ^5.9.3  | Tip güvenliği                                         |
+| `tsx`                       | ^4.21.0 | Geliştirme modunda TypeScript'i derlemeden çalıştırma |
 
 ---
 
@@ -91,6 +91,11 @@ npm run build
 ## 🖥️ Claude Desktop Entegrasyonu
 
 `claude_desktop_config.json` dosyasına aşağıdaki bloğu ekleyin:
+Claude Desktop config dosyasına erişmek için uygulama içerisinde:
+
+**Settings → Developer → Edit Config** adımlarını takip edebilirsiniz.
+
+Bu seçenek, MCP server tanımlarının bulunduğu `claude_desktop_config.json` dosyasını otomatik olarak açar ve düzenlemenize olanak sağlar.
 
 ```json
 {
@@ -117,43 +122,43 @@ Claude Desktop'ı **yeniden başlattıktan** sonra tool'lar aktif olur.
 
 ### 📋 Cari (Müşteri / Tedarikçi)
 
-| Tool Adı | Method | Endpoint | Açıklama |
-|---|---|---|---|
-| `cari_olustur_custom` | POST | `/api/Cari` | Yeni cari oluşturur (Tip adıyla, ID gerekmez) |
-| `cari_listele` | GET | `/api/Cari` | Tüm cari kartları listeler |
-| `cari_getir` | GET | `/api/Cari/{id}` | ID'ye göre cari detayını getirir |
-| `cari_guncelle` | PUT | `/api/Cari/{id}` | Cari kartını günceller |
-| `cari_kayit_kaldir` | DELETE | `/api/Cari/{id}` | Cari kaydını kaldırır |
-| `cari_min_liste` | GET | `/api/Cari/MinListe` | Hafif/hızlı cari listesi |
-| `cari_gruplu_liste` | GET | `/api/Cari/GrupluListe` | Gruplandırılmış cari listesi |
-| `cari_bakiye` | GET | `/api/Cari/Bakiye` | Güncel borç/alacak bakiyeleri |
-| `cari_onay_durumu_getir` | GET | `/api/Cari/{id}/OnayDurumu` | Cari onay durumu |
-| `cari_degisim_gecmisi_getir` | GET | `/api/Cari/{id}/DegisiklikGecmisi` | Değişiklik geçmişi |
-| `cari_belgeleri_getir` | GET | `/api/Cari/{id}/Belgeler` | Cari belgelerini listeler |
-| `cari_belge_ekle` | POST | `/api/Cari/{id}/BelgeEkle` | Cariye belge ekler |
-| `cari_belge_kaldir` | DELETE | `/api/Cari/{id}/BelgeSil/{BelgeID}` | Cari belgesini kaldırır |
-| `cari_notlarini_getir` | GET | `/api/Cari/{id}/Notlar` | Cari notlarını getirir |
-| `cari_not_ekle` | POST | `/api/Cari/{id}/NotEkle` | Cariye not ekler |
-| `cari_not_kaldir` | DELETE | `/api/Cari/{id}/NotSil/{NotID}` | Cari notunu kaldırır |
-| `cari_hareketleri_listele` | GET | `/api/CariHareketleri` | Cari hesap hareketleri |
-| `cari_hareketleri_pivot` | GET | `/api/CariHareketleri/Pivot` | Pivot formatında hareketler |
+| Tool Adı                     | Method | Endpoint                            | Açıklama                                      |
+| ---------------------------- | ------ | ----------------------------------- | --------------------------------------------- |
+| `cari_olustur_custom`        | POST   | `/api/Cari`                         | Yeni cari oluşturur (Tip adıyla, ID gerekmez) |
+| `cari_listele`               | GET    | `/api/Cari`                         | Tüm cari kartları listeler                    |
+| `cari_getir`                 | GET    | `/api/Cari/{id}`                    | ID'ye göre cari detayını getirir              |
+| `cari_guncelle`              | PUT    | `/api/Cari/{id}`                    | Cari kartını günceller                        |
+| `cari_kayit_kaldir`          | DELETE | `/api/Cari/{id}`                    | Cari kaydını kaldırır                         |
+| `cari_min_liste`             | GET    | `/api/Cari/MinListe`                | Hafif/hızlı cari listesi                      |
+| `cari_gruplu_liste`          | GET    | `/api/Cari/GrupluListe`             | Gruplandırılmış cari listesi                  |
+| `cari_bakiye`                | GET    | `/api/Cari/Bakiye`                  | Güncel borç/alacak bakiyeleri                 |
+| `cari_onay_durumu_getir`     | GET    | `/api/Cari/{id}/OnayDurumu`         | Cari onay durumu                              |
+| `cari_degisim_gecmisi_getir` | GET    | `/api/Cari/{id}/DegisiklikGecmisi`  | Değişiklik geçmişi                            |
+| `cari_belgeleri_getir`       | GET    | `/api/Cari/{id}/Belgeler`           | Cari belgelerini listeler                     |
+| `cari_belge_ekle`            | POST   | `/api/Cari/{id}/BelgeEkle`          | Cariye belge ekler                            |
+| `cari_belge_kaldir`          | DELETE | `/api/Cari/{id}/BelgeSil/{BelgeID}` | Cari belgesini kaldırır                       |
+| `cari_notlarini_getir`       | GET    | `/api/Cari/{id}/Notlar`             | Cari notlarını getirir                        |
+| `cari_not_ekle`              | POST   | `/api/Cari/{id}/NotEkle`            | Cariye not ekler                              |
+| `cari_not_kaldir`            | DELETE | `/api/Cari/{id}/NotSil/{NotID}`     | Cari notunu kaldırır                          |
+| `cari_hareketleri_listele`   | GET    | `/api/CariHareketleri`              | Cari hesap hareketleri                        |
+| `cari_hareketleri_pivot`     | GET    | `/api/CariHareketleri/Pivot`        | Pivot formatında hareketler                   |
 
 ### 📦 Stok
 
-| Tool Adı | Method | Endpoint | Açıklama |
-|---|---|---|---|
-| `stok_listele` | GET | `/api/Stok` | Stok kartlarını listeler |
-| `stok_getir` | GET | `/api/Stok/{id}` | ID'ye göre stok detayı |
-| `stok_guncelle` | PUT | `/api/Stok/{id}` | Stok kartını günceller |
-| `stok_hareketleri_listele` | GET | `/api/StokHareketleri` | Stok hareketleri |
-| `stok_hareketleri_pivot` | GET | `/api/StokHareketleri/Pivot` | Pivot formatında stok hareketleri |
+| Tool Adı                   | Method | Endpoint                     | Açıklama                          |
+| -------------------------- | ------ | ---------------------------- | --------------------------------- |
+| `stok_listele`             | GET    | `/api/Stok`                  | Stok kartlarını listeler          |
+| `stok_getir`               | GET    | `/api/Stok/{id}`             | ID'ye göre stok detayı            |
+| `stok_guncelle`            | PUT    | `/api/Stok/{id}`             | Stok kartını günceller            |
+| `stok_hareketleri_listele` | GET    | `/api/StokHareketleri`       | Stok hareketleri                  |
+| `stok_hareketleri_pivot`   | GET    | `/api/StokHareketleri/Pivot` | Pivot formatında stok hareketleri |
 
 ### 🏦 Banka
 
-| Tool Adı | Method | Endpoint | Açıklama |
-|---|---|---|---|
-| `banka_hesap_listele` | GET | `/api/BankaHesap` | Banka hesaplarını listeler |
-| `banka_hareketleri_listele` | GET | `/api/BankaHareketleri` | Banka hareketlerini listeler |
+| Tool Adı                    | Method | Endpoint                | Açıklama                     |
+| --------------------------- | ------ | ----------------------- | ---------------------------- |
+| `banka_hesap_listele`       | GET    | `/api/BankaHesap`       | Banka hesaplarını listeler   |
+| `banka_hareketleri_listele` | GET    | `/api/BankaHareketleri` | Banka hareketlerini listeler |
 
 ---
 
@@ -162,21 +167,27 @@ Claude Desktop'ı **yeniden başlattıktan** sonra tool'lar aktif olur.
 ```
 Müşteri tipinde "ABC Ticaret A.Ş." adıyla yeni bir cari oluştur
 ```
+
 ```
 Tüm cari kartlarını listele
 ```
+
 ```
 ID'si 42 olan cariyi getir
 ```
+
 ```
 42 numaralı carinin adını "XYZ Ltd. Şti." olarak güncelle
 ```
+
 ```
 Son cari hareketlerini göster
 ```
+
 ```
 Stok kartlarını listele
 ```
+
 ```
 Banka hesaplarını getir
 ```
